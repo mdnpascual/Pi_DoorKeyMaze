@@ -1,0 +1,604 @@
+// Created by Michael David Pascual
+// function to set walls to floors in the array dictated by the Random Number Generator
+// If only 1 possible direction is allowed, it will just go straight ahead on that direction
+// RANDOMEVENTS have 2 things to randomize, KEYGEN OR DOORGEN
+// DOORGEN Will only spawn if DOORFLAG is 1, It Will create a door 90 degrees from original position direction o
+// prevent unsolvable mazes
+// KEYGEN will only spawn if spacing reaches 0, and keyflag is 1. It will always spawn at the end of the position
+// direction that is chosen by SETDIRECTION. Spacing is set to prevent undesirable amount of keys and doors
+// being spawned
+
+.section .text
+
+.globl	SETDIRECTIONS
+
+//	R1 (CHOICE IS INPUT)
+//	R0 (CURRENT POS)
+//	R3 (ARRAY2D ADDRESS)
+//	R2 (VAL TO STORE)
+
+// ALTER THESE VALUES TO CHANGE MAZE GENERATION	
+// Rand 1/x = For percentage value
+	.set	doorP, 3
+	.set	keyP, 2
+	.set	spacing, 3	//Minimum Spacing between a key and a door
+
+SETDIRECTIONS:
+	PUSH	{R1}
+	LDRH	R1, =POSORIGIN
+	MOV 	R3, R4		// ARRAY2D ADDRESS
+	MOV	R0, R5			// CURRENT POS
+.ltorg
+.align 2
+	STRH	R0, [R1]	// STORE POSITION ORIGIN
+	POP	{R1}
+	CMP	R1, #1
+	BEQ	D1
+	CMP	R1, #2
+	BEQ	D2
+	CMP	R1, #3
+	BEQ	D3
+	CMP	R1, #4
+	BEQ	D4
+	CMP	R1, #5
+	BEQ	D5
+	CMP	R1, #6
+	BEQ	D6
+	CMP	R1, #7
+	BEQ	D7
+	CMP	R1, #8
+	BEQ	D8
+	CMP	R1, #9
+	BEQ	D9
+	CMP	R1, #10
+	BEQ	D10
+	CMP	R1, #11
+	BEQ	D11
+	CMP	R1, #12
+	BEQ	D12
+	CMP	R1, #13
+	BEQ	D13
+	CMP	R1, #14
+	BEQ	D14
+	CMP	R1, #15
+	BEQ	D15
+
+DOORGEN:
+	PUSH	{R1}		// SAVE
+	PUSH	{R3}
+	MOV	R0, #doorP
+	PUSH	{LR}
+	BL 	randomization	// r2 is the choice
+	POP	{LR}
+	CMP	R2, #1		// CHANCE TEST
+	BNE	DOORGENEND2	// CHANCE FAILED
+	LDRH	R1, =POSORIGIN
+.ltorg
+.align 2
+	LDRH	R1, [R1]	//GET VALUE
+	ADD	R1, R4
+	POP	{R3}
+	SUB	R2, R3, #34	// CHECK IF UP IS THE POSORIGIN
+	//POP	{R0}
+	CMP	R1, R2
+	BEQ	UPORIG
+	ADD	R2, R3, #2	// CHECK IF RIGHT IS THE POSORIGIN; #1 BEFORE
+	CMP	R1, R2
+	BEQ	RIGHTORIG
+	ADD	R2, R3, #34	// CHECK IF DOWN IS THE POSORIGIN
+	CMP	R1, R2
+	BEQ	DOWNORIG
+	SUB	R2, R3, #2	// CHECK UF LEFT IS THE POSORIGIN; #1 BEFORE
+	CMP	R1, R2
+	BEQ	LEFTORIG
+	B	DOORGENEND3
+
+
+KEYGEN:
+	CMP	R8, #1
+	BCS	KEYGENEND	// SPACING NOT YET MET
+	MOV	R0, #keyP
+	PUSH	{R1,R3}
+	PUSH	{LR}
+	BL 	randomization	//r2 is the choice
+	POP	{LR}
+	CMP	R2, #1		// CHANCE TEST
+	POP	{R1,R3}
+	BNE	KEYGENEND	// CHANCE FAILED
+	MOV	R2, #4		// SET TO KEY
+	STRB	R2, [R3]
+	ADD	R6, #1		// KEY COUNT +1
+	MOV	R9, #0		// KEYIF = 0
+	MOV	R10, #1		// DOORIF = 0
+KEYGENEND:
+	BX	LR
+	
+RIGHTORIG:
+	PUSH	{R3}
+	MOV	R0, #2
+	PUSH	{LR}
+	BL 	randomization	// r2 is the choice
+	POP	{LR}
+	POP	{R3}
+	POP	{R1}
+DEBUG1:
+	MOV	R0, R3
+	CMP	R2, #2
+	//BEQ	GLEFT
+	BLT	GUP
+	BEQ	GDOWN
+
+DOWNORIG:
+	PUSH	{R3}
+	MOV	R0, #2
+	PUSH	{LR}
+	BL 	randomization	// r2 is the choice
+	POP	{LR}
+	POP	{R3}
+	POP	{R1}
+DEBUG2:
+	MOV	R0, R3
+	CMP	R2, #2
+	//BEQ	GUP
+	BLT	GLEFT
+	BEQ	GRIGHT
+
+LEFTORIG:
+	PUSH	{R3}
+	MOV	R0, #2
+	PUSH	{LR}
+	BL 	randomization	// r2 is the choice
+	POP	{LR}
+	POP	{R3}
+	POP	{R1}
+DEBUG3:
+	MOV	R0, R3
+	CMP	R2, #2
+	//BEQ	GRIGHT
+	BLT	GUP
+	BEQ	GDOWN
+
+UPORIG:
+	PUSH	{R3}
+	MOV	R0, #2
+	PUSH	{LR}
+	BL 	randomization	// r2 is the choice
+	POP	{LR}
+	POP	{R3}
+	POP	{R1}
+DEBUG4:
+	MOV	R0, R3
+	CMP	R2, #2
+	//BEQ	GDOWN
+	BLT	GLEFT
+	BEQ	GRIGHT
+
+GUP:
+	PUSH	{R5}
+	SUB	R5, R3, R4
+	CMP	R5, #35		// REMOVE IF BROKEN
+	POP	{R5}
+	BLT	GDOWN		// REMOVE IF BROKEN
+	SUB	R3, #17
+	MOV	R2, #1
+	STRB	R2, [R3]
+	PUSH	{R1}
+	B	DOORGENEND
+		
+	
+GDOWN:
+	PUSH	{R5}
+	SUB	R5, R3, R4
+	CMP	R5, #255	// REMOVE IF BROKEN
+	POP	{R5}
+	BGT	GUP		// REMOVE IF BROKEN
+	ADD	R3, #17
+	MOV	R2, #1
+	STRB	R2, [R3]
+	PUSH	{R1}
+	B	DOORGENEND
+	
+
+GLEFT:
+	PUSH	{R0, R1, R2,R5}
+	MOV	R0, #30
+	MOV	R2, #0		// BYTE OFFSET
+	SUB	R5, R3,R4
+
+GLEFTLOOP:
+	CMP	R0, #0		// LOOP COUNTER
+	BEQ	GLEFTCONT
+	LDR	R1, =LEFTCHECK
+	ADD	R1, R2
+	LDRH	R1, [R1]
+	CMP	R5, R1
+	BEQ	GLEFTANTI		// CANNOT GO RIGHT
+	SUB	R0, #1
+	ADD	R2, #2
+	B	GLEFTLOOP
+
+GLEFTCONT:
+	POP	{R0, R1, R2,R5}
+	SUB	R3, #1
+	MOV	R2, #1
+	STRB	R2, [R3]
+	PUSH	{R1}
+	B	DOORGENEND
+
+GLEFTANTI:
+	POP	{R0, R1, R2,R5}
+	ADD	R3, #1
+	MOV	R2, #1
+	STRB	R2, [R3]
+	PUSH	{R1}
+	B	DOORGENEND
+	
+
+GRIGHT:
+	PUSH	{R0, R1, R2,R5}
+	MOV	R0, #30
+	MOV	R2, #0		// BYTE OFFSET
+	SUB	R5, R3,R4
+
+GRIGHTLOOP:
+	CMP	R0, #0		// LOOP COUNTER
+	BEQ	GRIGHTCONT
+	LDR	R1, =RIGHTCHECK
+	ADD	R1, R2
+	LDRH	R1, [R1]
+	CMP	R5, R1
+	BEQ	GRIGHTANTI		// CANNOT GO RIGHT
+	SUB	R0, #1
+	ADD	R2, #2
+	B	GRIGHTLOOP
+
+GRIGHTCONT:
+	POP	{R0, R1, R2,R5}
+	ADD	R3, #1
+	MOV	R2, #1
+	STRB	R2, [R3]
+	PUSH	{R1}
+	B	DOORGENEND
+
+GRIGHTANTI:
+	POP	{R0, R1, R2,R5}
+	SUB	R3, #1
+	MOV	R2, #1
+	STRB	R2, [R3]
+	PUSH	{R1}
+	B	DOORGENEND
+
+
+	
+DOORGENEND:
+	POP	{R1}
+	MOV 	R3, R0
+	ADD	R7, #1
+	MOV	R8, #spacing
+	MOV	R10, #0
+	MOV	R9, #1
+	BX	LR
+
+DOORGENEND2:
+	//POP	{R0}
+	POP	{R3}
+	POP	{R1}
+	BX	LR
+
+DOORGENEND3:
+	POP	{R1}
+	BX	LR
+
+RANDOMEVENTS:
+	CMP	R9, #1		// CHECK IF KEY GENERATION IS ON
+	PUSH	{LR}
+	BLEQ 	KEYGEN
+	POP	{LR}
+	CMP	r10, #1		// CHECK IF DOOR GENERATION IS ON
+	BEQ	R2
+	CMP	R8, #0
+	SUBNE	R8, #1
+R2:
+	PUSH	{LR}
+	BLEQ 	DOORGEN		
+	POP	{LR}
+	BX	LR
+	
+
+D1:
+	MOV 	R3, R4		// ARRAY2D ADDRESS
+	MOV	R0, R5		// CURRENT POS
+	// UP ONLY
+	SUB	R0, #17		// 1 ROW UP
+	ADD	R3, R0		// BASE ADDRESS + CURRENT POS (1 ROW UP)
+	LDRB	R2, [R3]	// CHECK IF DOOR
+	CMP	R2, #1
+	MOV	R2, #3		// SET AS FLOOR
+	BEQ	D1J		// IF THERE'S A DOOR, DON'T OVERWRITE
+	STRB	R2, [R3]	// STORE TO ARRAY
+D1J:
+	SUB	R3, #17		// 1 ROW UP AGAIN
+	STRB	R2, [R3]	// SET AS FLOOR
+
+	//RANDOM EVENTS
+	PUSH	{LR}
+	BL 	RANDOMEVENTS		
+	POP	{LR}
+
+	BX	LR
+
+D2:
+	MOV 	R3, R4		// ARRAY2D ADDRESS
+	MOV	R0, R5			// CURRENT POS
+	// LEFT ONLY
+	SUB	R0, #1		// 1 LEFT
+	ADD	R3, R0		// BASE ADDRESS + CURRENT POS (1 LEFT)
+	LDRB	R2, [R3]	// CHECK IF DOOR
+	CMP	R2, #1
+	MOV	R2, #3		// SET AS FLOOR
+	BEQ	D2J		// IF THERE'S A DOOR, DON'T OVERWRITE
+	STRB	R2, [R3]	// STORE TO ARRAY
+D2J:
+	SUB	R3, #1		// 1 LEFT AGAIN
+	STRB	R2, [R3]	// SET AS FLOOR
+
+	//RANDOM EVENTS
+	PUSH	{LR}
+	BL 	RANDOMEVENTS		
+	POP	{LR}
+
+	BX	LR
+	
+D3:
+	MOV 	R3, R4		// ARRAY2D ADDRESS
+	MOV	R0, R5			// CURRENT POS
+	// RIGHT ONLY
+	ADD	R0, #1		// 1 RIGHT
+	ADD	R3, R0		// BASE ADDRESS + CURRENT POS (1 LEFT)
+	LDRB	R2, [R3]	// CHECK IF DOOR
+	CMP	R2, #1
+	MOV	R2, #3		// SET AS FLOOR
+	BEQ	D3J		// IF THERE'S A DOOR, DON'T OVERWRITE
+	STRB	R2, [R3]	// STORE TO ARRAY
+D3J:
+	ADD	R3, #1		// 1 RIGHT AGAIN
+	STRB	R2, [R3]	// SET AS FLOOR
+
+	//RANDOM EVENTS
+	PUSH	{LR}
+	BL 	RANDOMEVENTS		
+	POP	{LR}
+
+	BX	LR
+	
+D4:
+	MOV 	R3, R4		// ARRAY2D ADDRESS
+	MOV	R0, R5			// CURRENT POS
+	// DOWN ONLY
+	ADD	R0, #17		// 1 ROW DOWN
+	ADD	R3, R0		// BASE ADDRESS + CURRENT POS (1 LEFT)
+	LDRB	R2, [R3]	// CHECK IF DOOR
+	CMP	R2, #1
+	MOV	R2, #3		// SET AS FLOOR
+	BEQ	D4J		// IF THERE'S A DOOR, DON'T OVERWRITE
+	STRB	R2, [R3]	// STORE TO ARRAY
+D4J:
+	ADD	R3, #17		// 1 RIGHT DOWN AGAIN
+	STRB	R2, [R3]	// SET AS FLOOR
+
+	//RANDOM EVENTS
+	PUSH	{LR}
+	BL 	RANDOMEVENTS		
+	POP	{LR}
+
+	BX	LR
+	
+D5:
+	MOV 	R3, R4		// ARRAY2D ADDRESS
+	MOV	R0, R5			// CURRENT POS
+	// LEFT AND RIGHT ONLY
+	MOV	R0, #2
+	PUSH	{R1,R3}
+	PUSH	{LR}
+	BL 	randomization	//r2 is the choice
+	POP	{LR}
+	CMP	R2, #2		// CHANCE TEST
+	POP	{R1,R3}
+	BEQ	D2	// LEFT CHANCE
+	BLE	D3	// RIGHT CHANCE
+
+	BX	LR
+	
+D6:
+	MOV 	R3, R4		// ARRAY2D ADDRESS
+	MOV	R0, R5			// CURRENT POS
+	// DOWN AND RIGHT ONLY
+	MOV	R0, #2
+	PUSH	{R1,R3}
+	PUSH	{LR}
+	BL 	randomization	//r2 is the choice
+	POP	{LR}
+	CMP	R2, #2		// CHANCE TEST
+	POP	{R1,R3}
+	BEQ	D4	// DOWN CHANCE
+	BNE	D3	// RIGHT CHANCE
+
+	BX	LR
+
+D7:
+	MOV 	R3, R4		// ARRAY2D ADDRESS
+	MOV	R0, R5			// CURRENT POS
+	// DOWN AND LEFT ONLY
+	MOV	R0, #2
+	PUSH	{R1,R3}
+	PUSH	{LR}
+	BL 	randomization	//r2 is the choice
+	POP	{LR}
+	CMP	R2, #2		// CHANCE TEST
+	POP	{R1,R3}
+	BEQ	D4	// DOWN CHANCE
+	BNE	D2	// LEFT CHANCE
+
+	BX	LR
+	
+D8:
+	MOV 	R3, R4		// ARRAY2D ADDRESS
+	MOV	R0, R5			// CURRENT POS
+	// UP AND DOWN ONLY
+	MOV	R0, #2
+	PUSH	{R1,R3}
+	PUSH	{LR}
+	BL 	randomization	//r2 is the choice
+	POP	{LR}
+	CMP	R2, #2		// CHANCE TEST
+	POP	{R1,R3}
+	BEQ	D4	// DOWN CHANCE
+	BNE	D1	// UP CHANCE
+
+	BX	LR
+	
+D9:
+	MOV 	R3, R4		// ARRAY2D ADDRESS
+	MOV	R0, R5			// CURRENT POS
+	// UP AND RIGHT ONLY
+	MOV	R0, #2
+	PUSH	{R1,R3}
+	PUSH	{LR}
+	BL 	randomization	//r2 is the choice
+	POP	{LR}
+	CMP	R2, #2		// CHANCE TEST
+	POP	{R1,R3}
+	BEQ	D3	// RIGHT CHANCE
+	BNE	D1	// UP CHANCE
+
+	BX	LR
+	
+D10:
+	MOV 	R3, R4		// ARRAY2D ADDRESS
+	MOV	R0, R5			// CURRENT POS
+	// UP AND LEFT ONLY
+	MOV	R0, #2
+	PUSH	{R1,R3}
+	PUSH	{LR}
+	BL 	randomization	//r2 is the choice
+	POP	{LR}
+	CMP	R2, #2		// CHANCE TEST
+	POP	{R1,R3}
+	BEQ	D2	// LEFT CHANCE
+	BNE	D1	// UP CHANCE
+
+	BX	LR
+	
+D11:
+	MOV 	R3, R4		// ARRAY2D ADDRESS
+	MOV	R0, R5			// CURRENT POS
+	// UP AND LEFT AND RIGHT ONLY
+	MOV	R0, #3
+	PUSH	{R1,R3}
+	PUSH	{LR}
+	BL 	randomization	//r2 is the choice
+	POP	{LR}
+	CMP	R2, #2		// CHANCE TEST
+	POP	{R1,R3}
+	BEQ	D2	// LEFT CHANCE
+	BLT	D1	// UP CHANCE
+	BGT	D3	// RIGHT CHANCE
+
+	BX	LR
+	
+D12:
+	MOV 	R3, R4		// ARRAY2D ADDRESS
+	MOV	R0, R5			// CURRENT POS
+	// DOWN AND LEFT AND RIGHT ONLY
+	MOV	R0, #3
+	PUSH	{R1,R3}
+	PUSH	{LR}
+	BL 	randomization	//r2 is the choice
+	POP	{LR}
+	CMP	R2, #2		// CHANCE TEST
+	POP	{R1,R3}
+	BEQ	D2	// LEFT CHANCE
+	BLT	D4	// DOWN CHANCE
+	BGT	D3	// RIGHT CHANCE
+
+	BX	LR
+	
+D13:
+	MOV 	R3, R4		// ARRAY2D ADDRESS
+	MOV	R0, R5			// CURRENT POS
+	// DOWN AND UP AND RIGHT ONLY
+	MOV	R0, #3
+	PUSH	{R1,R3}
+	PUSH	{LR}
+	BL 	randomization	//r2 is the choice
+	POP	{LR}
+	CMP	R2, #2		// CHANCE TEST
+	POP	{R1,R3}
+	BEQ	D1	// UP CHANCE
+	BLT	D4	// DOWN CHANCE
+	BGT	D3	// RIGHT CHANCE
+	POP	{LR}
+
+	BX	LR
+	
+D14:
+	MOV 	R3, R4		// ARRAY2D ADDRESS
+	MOV	R0, R5			// CURRENT POS
+	// DOWN AND UP AND LEFT ONLY
+	MOV	R0, #3
+	PUSH	{R1,R3}
+	PUSH	{LR}
+	BL 	randomization	//r2 is the choice
+	POP	{LR}
+	CMP	R2, #2		// CHANCE TEST
+	POP	{R1,R3}
+	BEQ	D1	// UP CHANCE
+	BLT	D4	// DOWN CHANCE
+	BGT	D2	// LEFT CHANCE
+	POP	{LR}
+
+	BX	LR
+	
+D15:
+	MOV 	R3, R4		// ARRAY2D ADDRESS
+	MOV	R0, R5			// CURRENT POS
+	// ALL
+	MOV	R0, #4
+	PUSH	{R1,R3}
+	PUSH	{LR}
+	BL 	randomization	//r2 is the choice
+	POP	{LR}
+	CMP	R2, #1		// CHANCE TEST
+	POP	{R1,R3}
+	BEQ	D1	// UP CHANCE
+	BEQ	D15END
+
+DNOTUP:
+	CMP	R2, #3		// CHANCE TEST
+	BEQ	D4	// DOWN CHANCE
+	BLT	D2	// LEFT CHANCE
+	BGT	D3	// LEFT CHANCE
+	
+D15END:
+	BX	LR
+
+
+
+.section .data
+
+POSORIGIN:
+	.hword	0
+
+.align 2
+
+RIGHTCHECK:
+	.hword	31,32,48,49,65,66,82,83,99,100,116,117,133,134,150,151,167,168,184,185,201,202,218,219,235,236,252,253,269,270
+
+.align 2
+
+LEFTCHECK:
+	.hword	18,19,35,36,52,53,69,70,86,87,103,104,120,121,137,138,154,155,171,172,188,189,205,206,222,223,239,240,256,257
+
+
+
+	

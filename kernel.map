@@ -1,0 +1,485 @@
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+LOAD build/SETDIRECTIONS.o
+LOAD build/DRAWNAMES.o
+LOAD build/Drawman16bpp.o
+LOAD build/Title.o
+LOAD build/Drawmaze.o
+LOAD build/jtag.o
+LOAD build/framebuffer.o
+LOAD build/Whitescreen16bpp.o
+LOAD build/Win.o
+LOAD build/DECIDECHAR.o
+LOAD build/Drawsmallblock16bpp.o
+LOAD build/Drawintro16bpp.o
+LOAD build/CHKDIRECTIONS.o
+LOAD build/main.o
+LOAD build/MAZEGENMAIN.o
+LOAD build/Clear.o
+LOAD build/tut09-support.o
+LOAD build/Drawdoor16bpp.o
+LOAD build/Drawfloor16bpp.o
+LOAD build/DECIDECHAR2.o
+LOAD build/Drawstart16bpp.o
+LOAD build/Drawexit16bpp.o
+LOAD build/Drawkey16bpp.o
+LOAD build/InitSNES.o
+LOAD build/Drawblock16bpp.o
+LOAD build/Lost.o
+LOAD build/DRAWCHAR.o
+LOAD build/Drawwall16bpp.o
+LOAD build/ReadSNES.o
+LOAD build/Redrawmaze.o
+
+.init           0x00008000        0x4
+ *(.init)
+ .init          0x00008000        0x4 build/main.o
+                0x00008000                _start
+
+.data           0x00009080     0x2780
+ *(.data)
+ .data          0x00009080       0x7c build/SETDIRECTIONS.o
+ *fill*         0x000090fc        0x4 3f3f3f3f
+ .data          0x00009100      0x800 build/DRAWNAMES.o
+ .data          0x00009900        0x0 build/Drawman16bpp.o
+ .data          0x00009900        0x0 build/Title.o
+ .data          0x00009900        0x0 build/Drawmaze.o
+ .data          0x00009900        0x0 build/jtag.o
+ .data          0x00009900       0x30 build/framebuffer.o
+                0x00009900                FrameBufferInit
+ .data          0x00009930        0x0 build/Whitescreen16bpp.o
+ .data          0x00009930        0x0 build/Win.o
+ .data          0x00009930        0x0 build/DECIDECHAR.o
+ .data          0x00009930        0x0 build/Drawsmallblock16bpp.o
+ .data          0x00009930        0x0 build/Drawintro16bpp.o
+ .data          0x00009930       0x78 build/CHKDIRECTIONS.o
+ .data          0x000099a8      0x121 build/main.o
+ *fill*         0x00009ac9        0x7 3f3f3f3f
+ .data          0x00009ad0      0x1c0 build/MAZEGENMAIN.o
+                0x00009c30                Seed
+                0x00009c34                Seed2
+                0x00009c38                frameB
+ .data          0x00009c90        0x0 build/Clear.o
+ *fill*         0x00009c90      0x370 3f3f3f3f
+ .data          0x0000a000     0x1000 build/tut09-support.o
+                0x0000a000                FrameBufferPointer
+ .data          0x0000b000        0x0 build/Drawdoor16bpp.o
+ .data          0x0000b000        0x0 build/Drawfloor16bpp.o
+ .data          0x0000b000        0x0 build/DECIDECHAR2.o
+ .data          0x0000b000        0x0 build/Drawstart16bpp.o
+ .data          0x0000b000        0x0 build/Drawexit16bpp.o
+ .data          0x0000b000        0x0 build/Drawkey16bpp.o
+ .data          0x0000b000        0x0 build/InitSNES.o
+ .data          0x0000b000        0x0 build/Drawblock16bpp.o
+ .data          0x0000b000        0x0 build/Lost.o
+ .data          0x0000b000      0x800 build/DRAWCHAR.o
+ .data          0x0000b800        0x0 build/Drawwall16bpp.o
+ .data          0x0000b800        0x0 build/ReadSNES.o
+ .data          0x0000b800        0x0 build/Redrawmaze.o
+ *.c.o(*)
+
+.igot.plt       0x0000b800        0x0
+ .igot.plt      0x00000000        0x0 build/SETDIRECTIONS.o
+
+.text           0x0000b800     0x8434
+ *.c.o(.text)
+ *(.text)
+ .text          0x0000b800      0x69c build/SETDIRECTIONS.o
+                0x0000b800                SETDIRECTIONS
+ *fill*         0x0000be9c        0x4 3f3f3f3f
+ .text          0x0000bea0     0x1100 build/DRAWNAMES.o
+                0x0000bea0                DRAWNAMES
+ .text          0x0000cfa0      0x448 build/Drawman16bpp.o
+                0x0000cfa0                Drawman16bpp
+ .text          0x0000d3e8      0x5b8 build/Title.o
+                0x0000d3e8                Title
+ .text          0x0000d9a0       0xbc build/Drawmaze.o
+                0x0000d9a0                Drawmaze
+ .text          0x0000da5c       0x8c build/jtag.o
+                0x0000da5c                EnableJTAG
+ .text          0x0000dae8       0x64 build/framebuffer.o
+                0x0000dae8                InitFrameBuffer
+ .text          0x0000db4c       0x48 build/Whitescreen16bpp.o
+                0x0000db4c                Whitescreen16bpp
+ .text          0x0000db94     0x1470 build/Win.o
+                0x0000db94                Win
+ .text          0x0000f004       0xdc build/DECIDECHAR.o
+                0x0000f004                DECIDECHAR
+ .text          0x0000f0e0       0x58 build/Drawsmallblock16bpp.o
+                0x0000f0e0                Drawsgblock16bpp
+ .text          0x0000f138       0xe0 build/Drawintro16bpp.o
+                0x0000f138                Drawintro16bpp
+ .text          0x0000f218      0x564 build/CHKDIRECTIONS.o
+                0x0000f218                CHKDIRECTIONS
+ .text          0x0000f77c      0x504 build/main.o
+                0x0000fc78                haltLoop$
+ .text          0x0000fc80      0x334 build/MAZEGENMAIN.o
+                0x0000fc80                MAZEGENMAIN
+                0x0000fed0                randomization
+                0x0000ff58                udivision
+ .text          0x0000ffb4       0x5c build/Clear.o
+                0x0000ffb4                Clear
+ .text          0x00010010       0xb8 build/tut09-support.o
+                0x00010010                DrawPixel
+                0x00010058                MailboxWrite
+                0x00010088                MailboxRead
+ .text          0x000100c8      0x414 build/Drawdoor16bpp.o
+                0x000100c8                Drawdoor16bpp
+ .text          0x000104dc       0xd0 build/Drawfloor16bpp.o
+                0x000104dc                Drawfloor16bpp
+ .text          0x000105ac      0x10c build/DECIDECHAR2.o
+                0x000105ac                DECIDECHAR2
+ .text          0x000106b8       0x60 build/Drawstart16bpp.o
+                0x000106b8                Drawstart16bpp
+ .text          0x00010718      0x414 build/Drawexit16bpp.o
+                0x00010718                Drawexit16bpp
+ .text          0x00010b2c      0x4a0 build/Drawkey16bpp.o
+                0x00010b2c                Drawkey16bpp
+ .text          0x00010fcc       0x68 build/InitSNES.o
+                0x00010fcc                InitSNES
+ .text          0x00011034       0xb4 build/Drawblock16bpp.o
+                0x00011034                Drawblueblock16bpp
+                0x0001108c                Drawredblock16bpp
+ .text          0x000110e8     0x1418 build/Lost.o
+                0x000110e8                Lost
+ .text          0x00012500     0x14c0 build/DRAWCHAR.o
+                0x00012500                DrawCharK
+                0x00012560                DrawCharE
+                0x000125c4                DrawCharY
+                0x00012624                DrawCharS
+                0x00012688                DrawCharSPC
+                0x000126ec                DrawCharM
+                0x00012750                DrawCharO
+                0x000127b4                DrawCharV
+                0x00012818                DrawCharE2
+                0x0001287c                DrawCharS2
+                0x000128e0                DrawCharSPC2
+                0x00012944                DrawCharKNUM10
+                0x000129a8                DrawCharKNUM11
+                0x00012a0c                DrawCharKNUM12
+                0x00012a70                DrawCharKNUM13
+                0x00012ae0                DrawCharKNUM14
+                0x00012b44                DrawCharKNUM15
+                0x00012ba8                DrawCharKNUM16
+                0x00012c0c                DrawCharKNUM17
+                0x00012c70                DrawCharKNUM18
+                0x00012cd4                DrawCharKNUM19
+                0x00012d38                DrawCharKNUM20
+                0x00012d9c                DrawCharKNUM21
+                0x00012e00                DrawCharKNUM22
+                0x00012e64                DrawCharKNUM23
+                0x00012ec8                DrawCharKNUM24
+                0x00012f2c                DrawCharKNUM25
+                0x00012f90                DrawCharKNUM26
+                0x00012ff4                DrawCharKNUM27
+                0x00013058                DrawCharKNUM28
+                0x000130bc                DrawCharKNUM29
+                0x00013120                DrawCharMNUM10
+                0x00013184                DrawCharMNUM11
+                0x000131e8                DrawCharMNUM12
+                0x0001324c                DrawCharMNUM13
+                0x000132b0                DrawCharMNUM14
+                0x00013314                DrawCharMNUM15
+                0x00013378                DrawCharMNUM16
+                0x000133dc                DrawCharMNUM17
+                0x00013440                DrawCharMNUM18
+                0x000134a4                DrawCharMNUM19
+                0x00013508                DrawCharMNUM20
+                0x0001356c                DrawCharMNUM21
+                0x000135d0                DrawCharMNUM22
+                0x00013634                DrawCharMNUM23
+                0x00013698                DrawCharMNUM24
+                0x000136fc                DrawCharMNUM25
+                0x00013760                DrawCharMNUM26
+                0x000137c4                DrawCharMNUM27
+                0x00013828                DrawCharMNUM28
+                0x0001388c                DrawCharMNUM29
+                0x000138f0                DrawCharMNUM30
+                0x00013954                DrawCharMNUM31
+ .text          0x000139c0       0x5c build/Drawwall16bpp.o
+                0x000139c0                Drawwall16bpp
+ .text          0x00013a1c      0x16c build/ReadSNES.o
+                0x00013a1c                ReadSNES
+ .text          0x00013b88       0xac build/Redrawmaze.o
+                0x00013b88                Redrawmaze
+OUTPUT(build/output.elf elf32-littlearm)
+
+.glue_7         0x00013c34        0x0
+ .glue_7        0x00000000        0x0 linker stubs
+
+.glue_7t        0x00013c34        0x0
+ .glue_7t       0x00000000        0x0 linker stubs
+
+.vfp11_veneer   0x00013c34        0x0
+ .vfp11_veneer  0x00000000        0x0 linker stubs
+
+.v4_bx          0x00013c34        0x0
+ .v4_bx         0x00000000        0x0 linker stubs
+
+.iplt           0x00013c34        0x0
+ .iplt          0x00000000        0x0 build/SETDIRECTIONS.o
+
+.rel.dyn        0x00013c34        0x0
+ .rel.iplt      0x00000000        0x0 build/SETDIRECTIONS.o
+
+.bss            0x00013c34        0x0
+ .bss           0x00013c34        0x0 build/SETDIRECTIONS.o
+ .bss           0x00013c34        0x0 build/DRAWNAMES.o
+ .bss           0x00013c34        0x0 build/Drawman16bpp.o
+ .bss           0x00013c34        0x0 build/Title.o
+ .bss           0x00013c34        0x0 build/Drawmaze.o
+ .bss           0x00013c34        0x0 build/jtag.o
+ .bss           0x00013c34        0x0 build/framebuffer.o
+ .bss           0x00013c34        0x0 build/Whitescreen16bpp.o
+ .bss           0x00013c34        0x0 build/Win.o
+ .bss           0x00013c34        0x0 build/DECIDECHAR.o
+ .bss           0x00013c34        0x0 build/Drawsmallblock16bpp.o
+ .bss           0x00013c34        0x0 build/Drawintro16bpp.o
+ .bss           0x00013c34        0x0 build/CHKDIRECTIONS.o
+ .bss           0x00013c34        0x0 build/main.o
+ .bss           0x00013c34        0x0 build/MAZEGENMAIN.o
+ .bss           0x00013c34        0x0 build/Clear.o
+ .bss           0x00013c34        0x0 build/tut09-support.o
+ .bss           0x00013c34        0x0 build/Drawdoor16bpp.o
+ .bss           0x00013c34        0x0 build/Drawfloor16bpp.o
+ .bss           0x00013c34        0x0 build/DECIDECHAR2.o
+ .bss           0x00013c34        0x0 build/Drawstart16bpp.o
+ .bss           0x00013c34        0x0 build/Drawexit16bpp.o
+ .bss           0x00013c34        0x0 build/Drawkey16bpp.o
+ .bss           0x00013c34        0x0 build/InitSNES.o
+ .bss           0x00013c34        0x0 build/Drawblock16bpp.o
+ .bss           0x00013c34        0x0 build/Lost.o
+ .bss           0x00013c34        0x0 build/DRAWCHAR.o
+ .bss           0x00013c34        0x0 build/Drawwall16bpp.o
+ .bss           0x00013c34        0x0 build/ReadSNES.o
+ .bss           0x00013c34        0x0 build/Redrawmaze.o
+
+.ARM.attributes
+                0x00000000       0x26
+ .ARM.attributes
+                0x00000000       0x26 build/SETDIRECTIONS.o
+ .ARM.attributes
+                0x00000026       0x26 build/DRAWNAMES.o
+ .ARM.attributes
+                0x0000004c       0x26 build/Drawman16bpp.o
+ .ARM.attributes
+                0x00000072       0x26 build/Title.o
+ .ARM.attributes
+                0x00000098       0x26 build/Drawmaze.o
+ .ARM.attributes
+                0x000000be       0x26 build/jtag.o
+ .ARM.attributes
+                0x000000e4       0x26 build/framebuffer.o
+ .ARM.attributes
+                0x0000010a       0x26 build/Whitescreen16bpp.o
+ .ARM.attributes
+                0x00000130       0x26 build/Win.o
+ .ARM.attributes
+                0x00000156       0x26 build/DECIDECHAR.o
+ .ARM.attributes
+                0x0000017c       0x26 build/Drawsmallblock16bpp.o
+ .ARM.attributes
+                0x000001a2       0x26 build/Drawintro16bpp.o
+ .ARM.attributes
+                0x000001c8       0x26 build/CHKDIRECTIONS.o
+ .ARM.attributes
+                0x000001ee       0x26 build/main.o
+ .ARM.attributes
+                0x00000214       0x26 build/MAZEGENMAIN.o
+ .ARM.attributes
+                0x0000023a       0x26 build/Clear.o
+ .ARM.attributes
+                0x00000260       0x26 build/tut09-support.o
+ .ARM.attributes
+                0x00000286       0x26 build/Drawdoor16bpp.o
+ .ARM.attributes
+                0x000002ac       0x26 build/Drawfloor16bpp.o
+ .ARM.attributes
+                0x000002d2       0x26 build/DECIDECHAR2.o
+ .ARM.attributes
+                0x000002f8       0x26 build/Drawstart16bpp.o
+ .ARM.attributes
+                0x0000031e       0x26 build/Drawexit16bpp.o
+ .ARM.attributes
+                0x00000344       0x26 build/Drawkey16bpp.o
+ .ARM.attributes
+                0x0000036a       0x26 build/InitSNES.o
+ .ARM.attributes
+                0x00000390       0x26 build/Drawblock16bpp.o
+ .ARM.attributes
+                0x000003b6       0x26 build/Lost.o
+ .ARM.attributes
+                0x000003dc       0x26 build/DRAWCHAR.o
+ .ARM.attributes
+                0x00000402       0x26 build/Drawwall16bpp.o
+ .ARM.attributes
+                0x00000428       0x26 build/ReadSNES.o
+ .ARM.attributes
+                0x0000044e       0x26 build/Redrawmaze.o
+
+.debug_line     0x00000000     0x2973
+ .debug_line    0x00000000      0x1f0 build/SETDIRECTIONS.o
+ .debug_line    0x000001f0      0x488 build/DRAWNAMES.o
+ .debug_line    0x00000678      0x162 build/Drawman16bpp.o
+ .debug_line    0x000007da      0x1ab build/Title.o
+ .debug_line    0x00000985       0x6f build/Drawmaze.o
+ .debug_line    0x000009f4       0x61 build/jtag.o
+ .debug_line    0x00000a55       0x5f build/framebuffer.o
+ .debug_line    0x00000ab4       0x5c build/Whitescreen16bpp.o
+ .debug_line    0x00000b10      0x557 build/Win.o
+ .debug_line    0x00001067       0x79 build/DECIDECHAR.o
+ .debug_line    0x000010e0       0x61 build/Drawsmallblock16bpp.o
+ .debug_line    0x00001141       0x7e build/Drawintro16bpp.o
+ .debug_line    0x000011bf      0x1a5 build/CHKDIRECTIONS.o
+ .debug_line    0x00001364      0x191 build/main.o
+ .debug_line    0x000014f5      0x12d build/MAZEGENMAIN.o
+ .debug_line    0x00001622       0x56 build/Clear.o
+ .debug_line    0x00001678       0x7e build/tut09-support.o
+ .debug_line    0x000016f6      0x152 build/Drawdoor16bpp.o
+ .debug_line    0x00001848       0x7c build/Drawfloor16bpp.o
+ .debug_line    0x000018c4       0x86 build/DECIDECHAR2.o
+ .debug_line    0x0000194a       0x5e build/Drawstart16bpp.o
+ .debug_line    0x000019a8      0x152 build/Drawexit16bpp.o
+ .debug_line    0x00001afa      0x172 build/Drawkey16bpp.o
+ .debug_line    0x00001c6c       0x5e build/InitSNES.o
+ .debug_line    0x00001cca       0x76 build/Drawblock16bpp.o
+ .debug_line    0x00001d40      0x542 build/Lost.o
+ .debug_line    0x00002282      0x57d build/DRAWCHAR.o
+ .debug_line    0x000027ff       0x5e build/Drawwall16bpp.o
+ .debug_line    0x0000285d       0xa9 build/ReadSNES.o
+ .debug_line    0x00002906       0x6d build/Redrawmaze.o
+
+.debug_info     0x00000000      0xb22
+ .debug_info    0x00000000       0x62 build/SETDIRECTIONS.o
+ .debug_info    0x00000062       0x5e build/DRAWNAMES.o
+ .debug_info    0x000000c0       0x61 build/Drawman16bpp.o
+ .debug_info    0x00000121       0x5a build/Title.o
+ .debug_info    0x0000017b       0x5d build/Drawmaze.o
+ .debug_info    0x000001d8       0x56 build/jtag.o
+ .debug_info    0x0000022e       0x60 build/framebuffer.o
+ .debug_info    0x0000028e       0x65 build/Whitescreen16bpp.o
+ .debug_info    0x000002f3       0x58 build/Win.o
+ .debug_info    0x0000034b       0x5f build/DECIDECHAR.o
+ .debug_info    0x000003aa       0x68 build/Drawsmallblock16bpp.o
+ .debug_info    0x00000412       0x63 build/Drawintro16bpp.o
+ .debug_info    0x00000475       0x62 build/CHKDIRECTIONS.o
+ .debug_info    0x000004d7       0x56 build/main.o
+ .debug_info    0x0000052d       0x60 build/MAZEGENMAIN.o
+ .debug_info    0x0000058d       0x5a build/Clear.o
+ .debug_info    0x000005e7       0x62 build/tut09-support.o
+ .debug_info    0x00000649       0x62 build/Drawdoor16bpp.o
+ .debug_info    0x000006ab       0x63 build/Drawfloor16bpp.o
+ .debug_info    0x0000070e       0x60 build/DECIDECHAR2.o
+ .debug_info    0x0000076e       0x63 build/Drawstart16bpp.o
+ .debug_info    0x000007d1       0x62 build/Drawexit16bpp.o
+ .debug_info    0x00000833       0x61 build/Drawkey16bpp.o
+ .debug_info    0x00000894       0x5a build/InitSNES.o
+ .debug_info    0x000008ee       0x63 build/Drawblock16bpp.o
+ .debug_info    0x00000951       0x59 build/Lost.o
+ .debug_info    0x000009aa       0x5d build/DRAWCHAR.o
+ .debug_info    0x00000a07       0x62 build/Drawwall16bpp.o
+ .debug_info    0x00000a69       0x5a build/ReadSNES.o
+ .debug_info    0x00000ac3       0x5f build/Redrawmaze.o
+
+.debug_abbrev   0x00000000      0x256
+ .debug_abbrev  0x00000000       0x14 build/SETDIRECTIONS.o
+ .debug_abbrev  0x00000014       0x14 build/DRAWNAMES.o
+ .debug_abbrev  0x00000028       0x14 build/Drawman16bpp.o
+ .debug_abbrev  0x0000003c       0x14 build/Title.o
+ .debug_abbrev  0x00000050       0x14 build/Drawmaze.o
+ .debug_abbrev  0x00000064       0x14 build/jtag.o
+ .debug_abbrev  0x00000078       0x14 build/framebuffer.o
+ .debug_abbrev  0x0000008c       0x14 build/Whitescreen16bpp.o
+ .debug_abbrev  0x000000a0       0x14 build/Win.o
+ .debug_abbrev  0x000000b4       0x14 build/DECIDECHAR.o
+ .debug_abbrev  0x000000c8       0x14 build/Drawsmallblock16bpp.o
+ .debug_abbrev  0x000000dc       0x14 build/Drawintro16bpp.o
+ .debug_abbrev  0x000000f0       0x14 build/CHKDIRECTIONS.o
+ .debug_abbrev  0x00000104       0x12 build/main.o
+ .debug_abbrev  0x00000116       0x14 build/MAZEGENMAIN.o
+ .debug_abbrev  0x0000012a       0x14 build/Clear.o
+ .debug_abbrev  0x0000013e       0x14 build/tut09-support.o
+ .debug_abbrev  0x00000152       0x14 build/Drawdoor16bpp.o
+ .debug_abbrev  0x00000166       0x14 build/Drawfloor16bpp.o
+ .debug_abbrev  0x0000017a       0x14 build/DECIDECHAR2.o
+ .debug_abbrev  0x0000018e       0x14 build/Drawstart16bpp.o
+ .debug_abbrev  0x000001a2       0x14 build/Drawexit16bpp.o
+ .debug_abbrev  0x000001b6       0x14 build/Drawkey16bpp.o
+ .debug_abbrev  0x000001ca       0x14 build/InitSNES.o
+ .debug_abbrev  0x000001de       0x14 build/Drawblock16bpp.o
+ .debug_abbrev  0x000001f2       0x14 build/Lost.o
+ .debug_abbrev  0x00000206       0x14 build/DRAWCHAR.o
+ .debug_abbrev  0x0000021a       0x14 build/Drawwall16bpp.o
+ .debug_abbrev  0x0000022e       0x14 build/ReadSNES.o
+ .debug_abbrev  0x00000242       0x14 build/Redrawmaze.o
+
+.debug_aranges  0x00000000      0x3c8
+ .debug_aranges
+                0x00000000       0x20 build/SETDIRECTIONS.o
+ .debug_aranges
+                0x00000020       0x20 build/DRAWNAMES.o
+ .debug_aranges
+                0x00000040       0x20 build/Drawman16bpp.o
+ .debug_aranges
+                0x00000060       0x20 build/Title.o
+ .debug_aranges
+                0x00000080       0x20 build/Drawmaze.o
+ .debug_aranges
+                0x000000a0       0x20 build/jtag.o
+ .debug_aranges
+                0x000000c0       0x20 build/framebuffer.o
+ .debug_aranges
+                0x000000e0       0x20 build/Whitescreen16bpp.o
+ .debug_aranges
+                0x00000100       0x20 build/Win.o
+ .debug_aranges
+                0x00000120       0x20 build/DECIDECHAR.o
+ .debug_aranges
+                0x00000140       0x20 build/Drawsmallblock16bpp.o
+ .debug_aranges
+                0x00000160       0x20 build/Drawintro16bpp.o
+ .debug_aranges
+                0x00000180       0x20 build/CHKDIRECTIONS.o
+ .debug_aranges
+                0x000001a0       0x28 build/main.o
+ .debug_aranges
+                0x000001c8       0x20 build/MAZEGENMAIN.o
+ .debug_aranges
+                0x000001e8       0x20 build/Clear.o
+ .debug_aranges
+                0x00000208       0x20 build/tut09-support.o
+ .debug_aranges
+                0x00000228       0x20 build/Drawdoor16bpp.o
+ .debug_aranges
+                0x00000248       0x20 build/Drawfloor16bpp.o
+ .debug_aranges
+                0x00000268       0x20 build/DECIDECHAR2.o
+ .debug_aranges
+                0x00000288       0x20 build/Drawstart16bpp.o
+ .debug_aranges
+                0x000002a8       0x20 build/Drawexit16bpp.o
+ .debug_aranges
+                0x000002c8       0x20 build/Drawkey16bpp.o
+ .debug_aranges
+                0x000002e8       0x20 build/InitSNES.o
+ .debug_aranges
+                0x00000308       0x20 build/Drawblock16bpp.o
+ .debug_aranges
+                0x00000328       0x20 build/Lost.o
+ .debug_aranges
+                0x00000348       0x20 build/DRAWCHAR.o
+ .debug_aranges
+                0x00000368       0x20 build/Drawwall16bpp.o
+ .debug_aranges
+                0x00000388       0x20 build/ReadSNES.o
+ .debug_aranges
+                0x000003a8       0x20 build/Redrawmaze.o
+
+.debug_ranges   0x00000000       0x20
+ .debug_ranges  0x00000000       0x20 build/main.o
